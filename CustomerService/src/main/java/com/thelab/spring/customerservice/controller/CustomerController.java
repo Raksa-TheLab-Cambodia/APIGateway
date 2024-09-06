@@ -10,17 +10,24 @@ import reactor.core.publisher.Mono;
 @RestController
 @RequestMapping("/customer")
 public class CustomerController {
-    private final RestTemplate restTemplate;
+    private final WebClient.Builder webClient;
 
-    public CustomerController(RestTemplate restTemplate) {
-        this.restTemplate = restTemplate;
+    public CustomerController(WebClient.Builder webClient) {
+        this.webClient = webClient;
     }
 
     @GetMapping("/info")
-    public String displayBalance() {
-        String balanceServiceUrl = "http://Account-Service/account/balance";
-        String loanServiceUrl = "http://Loan-Service/loan/balance";
-        return "You have " + restTemplate.getForObject(balanceServiceUrl, String.class) +
-                "<br>and you have loan with amount " + restTemplate.getForObject(loanServiceUrl, String.class) ;
+    public Mono<String> displayBalance() {
+        Mono<String> accountBalanceResponse = webClient.build().get().uri("lb://ACCOUNT-SERVICE/account/balance")
+                .retrieve().bodyToMono(String.class);
+
+        Mono<String> loanBalanceResponse = webClient.build().get().uri("lb://ACCOUNT-SERVICE/account/balance")
+                .retrieve().bodyToMono(String.class);
+
+        return Mono.zip(accountBalanceResponse, loanBalanceResponse)
+                .map( response ->
+                    "You have " + response.getT1() +
+                    "<br>and you have loan with amount " + response.getT2()
+                );
     }
 }

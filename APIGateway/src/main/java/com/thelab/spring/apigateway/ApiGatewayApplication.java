@@ -15,22 +15,4 @@ public class ApiGatewayApplication {
         SpringApplication.run(ApiGatewayApplication.class, args);
     }
 
-    @Bean
-    public RouteLocator routeLocator(RouteLocatorBuilder builder){
-        return builder.routes()
-                .route(p-> p.path("/account/**")
-//                        .filters(f -> f.rewritePath("/account/(?<segment>.*)","/account/${segment}"))
-                        .uri("lb://ACCOUNT-SERVICE")
-                )
-                .route(p-> p.path("/loan/**")
-//                        .filters(f -> f.rewritePath("/loan/(?<segment>.*)","/loan/${segment}"))
-                        .uri("lb://LOAN-SERVICE")
-                )
-                .route(p-> p.path("/customer/**")
-//                        .filters(f -> f.rewritePath("/customer/(?<segment>.*)","/customer/${segment}"))
-                                .uri("lb://CUSTOMER-SERVICE")
-                )
-                .build();
-    }
-
 }
