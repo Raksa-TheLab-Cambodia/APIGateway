@@ -1,0 +1,17 @@
+spring:
+  application.name: API-Gateway
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true #to enable dynamic routing in Spring Cloud Gateway using service discovery.can match application name if one is Title Case and another configuration uri is UPPERCASE or in any case
+
+server.port: 8888
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    prefer-ip-address: true
+
+
